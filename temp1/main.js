@@ -33,7 +33,7 @@ Vue.component('product', {
       <div class="product-image">
 
         <a :href="imageLink">
-          <img :src="image_src" :title="altText">
+          <img :src="image" :title="altText">
         </a>
 
       </div>
@@ -54,10 +54,11 @@ Vue.component('product', {
           <product-details :details=details></product-details>
 
           <h3>Variants: </h3>
-          <div v-for="variant in variants"
-               class="color-box"
-              :style="{background: variant.variantColor}"
-              @mouseover="getSocksImgByColor(variant.variantColor)">
+          <div v-for="(variant, index) in variants">
+              <div class="color-box"
+                  :style="{background: variant.variantColor}"
+                  @mouseover="updateProduct(index)">
+              </div>
           </div>
 
           <h3>Sizes: </h3>
@@ -79,13 +80,8 @@ Vue.component('product', {
             Remove one from Cart
           </button>
 
-          <div class="cart">
-            <p>Cart ({{ cart }})</p>
           </div>
-          </div>
-
       </div>
-
     </div>
     `
   ,
@@ -95,51 +91,56 @@ Vue.component('product', {
       brand: 'Vue-Reebok',
       image_src: './images/vmSocks-green.jpg',
       altText: 'A pair of socks',
-      imageLink: 'http://elitasoft.com',
+      imageLink: 'https://elitasoft.com',
       instock: true,
       onSale: true,
+      selectedVariant: 0,
       details: ["80% cotton", "20% polyester", "Male"],
       variants: [
         {
           variantID: 1,
-          variantColor: "green"
+          variantColor: "green",
+          variantImage: "./images/vmSocks-green.jpg"
         },
         {
           variantID: 2,
-          variantColor: "blue"
+          variantColor: "blue",
+          variantImage: "./images/vmSocks-blue.jpg"
         }
       ],
       sizes: [
         "M", "L", "XL", "XXL"
       ],
-      cart: 0
+      //cart: 0
     }
   },
 
   methods: {
     incrementCart() {
-      this.cart += 1;
-      if (this.cart >= 3) {
-        this.instock = false;
-      }
+      //console.log(this.variants[this.selectedVariant].variantID);
+      this.$emit('add-to-cart', this.variants[this.selectedVariant].variantID);
+      // this.cart += 1;
+      // if (this.cart >= 3) {
+      //   this.instock = false;
+      // }
     },
     decrementCart() {
-      if (this.cart > 0) {
-        this.cart -= 1;
-        this.instock = true;
-      }
+      this.$emit('remove-from-cart', this.variants[this.selectedVariant].variantID);
+      // if (this.cart > 0) {
+      //   this.cart -= 1;
+      //   this.instock = true;
+      // }
     },
-    getSocksImgByColor: function(color) {
-      if (color == 'green') {
-        this.image_src = './images/vmSocks-green.jpg';
-      } else {
-        this.image_src = './images/vmSocks-blue.jpg';
-      }
+    updateProduct(index) {
+      this.selectedVariant = index;
     }
   },
   computed: {
     product_title() {
        return this.brand + ' ' + this.product
+     },
+     image() {
+       return this.variants[this.selectedVariant].variantImage
      }
   }
 
@@ -149,6 +150,24 @@ Vue.component('product', {
 var app = new Vue({
   el: '#app',
   data: {
-    premium: true
+    premium: true,
+    cart: []
+  },
+  methods: {
+    globalyAddToCart(id) {
+      this.cart.push(id);
+    },
+    globalyRemoveFromCart(id) {
+      for(var i = this.cart.length - 1; i >= 0; i--) {
+        if (this.cart[i] === id) {
+           this.cart.splice(i, 1);
+           return;
+        }
+      }
+      // if (this.cart > 0) {
+      //    this.cart -= 1;
+      //    this.instock = true;
+      // }
+    }
   }
 });
