@@ -79,8 +79,9 @@ Vue.component('product', {
             Remove one from Cart
           </button>
 
-
-
+          <div class="cart">
+            <p>Cart ({{ cart }})</p>
+          </div>
           </div>
 
       </div>
