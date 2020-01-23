@@ -14,71 +14,16 @@
 
   <div id="app">
 
-      <div class="product">
+      <product :premium="premium"></product>
 
-        <div class="product-image">
+      <hr>
 
-          <a :href="imageLink">
-            <img :src="image_src" :title="altText">
-          </a>
+      <product :premium="premium"></product>
 
-        </div>
+      <hr>
 
-        <div class="product-info">
+      <product :premium="premium"></product>
 
-            <h1>{{ product_title }}</<h1>
-            <p v-if="instock">In Stock</p>
-            <p v-else :class="{'cancel-the-text': !instock}">Out of Stock</p>
-
-            <div class="box-on-sale">
-              <p v-if="onSale" style="background: green;">On sale</p>
-              <p v-else style="background: red;">Not for sale</p>
-            </div>
-
-            <h3>Details: </h3>
-            <ul>
-              <li v-for="detail in details">
-                {{ detail }}
-              </li>
-            </ul>
-
-            <h3>Variants: </h3>
-            <div v-for="variant in variants"
-                 class="color-box"
-                :style="{background: variant.variantColor}"
-                @mouseover="getSocksImgByColor(variant.variantColor)">
-            </div>
-
-            <h3>Sizes: </h3>
-            <span v-for="size in sizes">{{ size }} </span>
-
-            <div>
-              <button
-              @click="incrementCart"
-              :disabled=!instock
-              :class="{disabledButton: !instock}"
-              >
-              Add to Cart
-              </button>
-
-              <button
-              @click="decrementCart"
-              :class="{disabledButton: this.cart <= 0}"
-              >
-              Remove one from Cart
-            </button>
-
-              <div class="cart">
-                <p>Cart items ({{ cart }})</p>
-              </div>
-            </div>
-
-
-
-
-        </div>
-
-      </div>
   </div>
 
 
