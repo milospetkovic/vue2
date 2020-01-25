@@ -1,3 +1,58 @@
+Vue.component('reviews-tabs', {
+  template:
+  `
+  <div>
+    <div>
+      <span v-for="(tab, index) in tabs"
+            :key="index"
+            :class="{activeTab: selectedTab === index}"
+            @click="selectedTab = index"
+            class="tab">
+            {{ tab }}
+      </span>
+    </div>
+    <div>
+
+      <div class="product-reviews" v-show="selectedTab === 0">
+
+        <div v-if="!reviews.length">
+          <p>No reviews yet.</p>
+        </div>
+        <ul>
+          <li v-for="review in reviews">
+            <p>Name: {{ review.name }}</p>
+            <p>Review: {{ review.review }}</p>
+            <p>Rating: {{ review.rating }}</p>
+            <p>Recommend: {{ review.recommend }}</p>
+          </li>
+        </ul>
+
+      </div>
+
+      <product-add-review-box v-show="selectedTab === 1" @submitted-review="addReview"></product-add-review-box>
+
+    </div>
+  </div>
+  `
+  ,
+  data() {
+    return {
+      tabs: ['Reviews', 'Add review'],
+      selectedTab: 0,
+      reviews: []
+    }
+  },
+  methods: {
+    addReview(productReview) {
+      //alert('add review');
+      //console.log(productReview);
+      this.reviews.push(productReview);
+      this.selectedTab = 0;
+    }
+  }
+});
+
+
 Vue.component('product-details', {
   props: {
     details: {
@@ -128,25 +183,7 @@ Vue.component('product', {
             </a>
           </div>
 
-          <div class="product-reviews">
-
-            <h2>Reviews</h2>
-            <div v-if="!reviews.length">
-              <p>No reviews yet.</p>
-            </div>
-            <ul>
-              <li v-for="review in reviews">
-                <p>Name: {{ review.name }}</p>
-                <p>Review: {{ review.review }}</p>
-                <p>Rating: {{ review.rating }}</p>
-                <p>Recommend: {{ review.recommend }}</p>
-              </li>
-            </ul>
-
-          </div>
-
-          <product-add-review-box @submitted-review="addReview"></product-add-review-box>
-
+          <reviews-tabs></reviews-tabs>
 
         </div>
 
@@ -225,8 +262,7 @@ Vue.component('product', {
       ],
       sizes: [
         "M", "L", "XL", "XXL"
-      ],
-      reviews: []
+      ]
       //cart: 0
     }
   },
