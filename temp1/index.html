@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Product APp</title>
 
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Product App</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" href="style.css">
 
 </head>
@@ -14,13 +18,29 @@
 
   <div id="app">
 
-      <div class="cart">
-        <p>Cart ({{ cart.length }})</p>
+    <div class="container-fluid">
+
+      <div class="row">
+
+        <div class="cols-xs-12 col-sm-6">
+
+          <div class="cart">
+            <p>Cart ({{ cart.length }})</p>
+          </div>
+
+        </div>
+
       </div>
 
-      <product :premium="premium" @add-to-cart="globalyAddToCart" @remove-from-cart="globalyRemoveFromCart"></product>
+      <div class="row">
 
-      <hr>
+        <product :premium="premium" @add-to-cart="globalyAddToCart" @remove-from-cart="globalyRemoveFromCart"></product>
+
+        <hr>
+
+      </div>
+
+    </div>
 
   </div>
 

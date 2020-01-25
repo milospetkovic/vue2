@@ -24,13 +24,14 @@ body {
  }
 
  .product-image {
-   width: 80%;
+   width: 100%;
+   max-width: 300px;
  }
 
  .product-image,
  .product-info {
    margin-top: 10px;
-   width: 50%;
+   width: 100%;
  }
 
  .color-box {
@@ -62,9 +63,9 @@ body {
  }
 
  .review-form {
-   width: 400px;
+   /*width: 400px;
    padding: 20px;
-   margin: 40px;
+   margin: 40px;*/
    border: 1px solid #d8d8d8;
  }
 

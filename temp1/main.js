@@ -18,72 +18,171 @@ Vue.component('product-details', {
   `
 });
 
+Vue.component('product-add-review-box', {
+  data() {
+    return {
+      name: null,
+      review: null,
+      rating: null,
+      errors: []
+    }
+  },
+  template:
+  `
+  <form class="review-form" @submit.prevent="submitReview">
+    <div class="container-product-add-review-box">
+      <h3>Add review for product</h3>
+      <p>
+        <label for="name">Name:</label>
+        <input name="name" id="name" v-model="name">
+      </p>
+
+      <p>
+        <label for="review">Review:</label>
+        <textarea name="review" id="review" v-model="review"></textarea>
+      </p>
+
+      <p>
+        <label for="rating">Rating:</label>
+        <select name="rating" id="rating" v-model="rating">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </p>
+
+      <p>
+        <button>Submit</button>
+      </p>
+
+    </div>
+  </form>
+  `,
+  methods: {
+    submitReview() {
+
+      //if (name.)
+      let productReview = {
+        name: this.name,
+        review: this.review,
+        rating: this.rating
+      }
+
+      if (!this.name) this.errors.push('Name required');
+      if (!this.review) this.errors.push('Review required');
+      if (!this.rating) this.errors.push('Rating required');
+
+      if (!this.errors.length) {
+
+        let productReview = {
+          name: this.name,
+          review: this.review,
+          rating: this.rating
+        }
+
+        this.$emit('submitted-review', productReview);
+        this.name=null,
+        this.review=null,
+        this.rating=null
+      }
+
+      //alert('submit action');
+    }
+  }
+});
+
 
 Vue.component('product', {
   props: {
     premium: {
       type: Boolean,
       required: true
-    }
+    },
   },
   template:
     `
     <div class="product">
+      <div class="row">
 
-      <div class="product-image">
-
-        <a :href="imageLink">
-          <img :src="image" :title="altText">
-        </a>
-
-      </div>
-
-      <div class="product-info">
-
-          <h1>{{ product_title }}</h1>
-          <p v-if="instock">In Stock</p>
-          <p v-else :class="{'cancel-the-text': !instock}">Out of Stock</p>
-
-          <div class="box-on-sale">
-            <p v-if="onSale" style="background: green;">On sale</p>
-            <p v-else style="background: red;">Not for sale</p>
+        <div class="col-xs-12 col-sm-6">
+          <div class="product-image">
+            <a :href="imageLink">
+              <img :src="image" :title="altText">
+            </a>
           </div>
 
-          <p>User is premium: {{ premium }}</p>
+          <div class="product-reviews">
 
-          <product-details :details=details></product-details>
+            <h2>Reviews</h2>
+            <div v-if="!reviews.length">
+              <p>No reviews yet.</p>
+            </div>
+            <ul>
+              <li v-for="review in reviews">
+                <p>Name: {{ review.name }}</p>
+                <p>Review: {{ review.review }}</p>
+                <p>Rating: {{ review.rating }}</p>
+              </li>
+            </ul>
 
-          <h3>Variants: </h3>
-          <div v-for="(variant, index) in variants">
-              <div class="color-box"
-                  :style="{background: variant.variantColor}"
-                  @mouseover="updateProduct(index)">
+          </div>
+
+          <product-add-review-box @submitted-review="addReview"></product-add-review-box>
+
+
+        </div>
+
+        <div class="col-xs-12 col-sm-6">
+          <div class="product-info">
+
+              <h1>{{ product_title }}</h1>
+              <p v-if="instock">In Stock</p>
+              <p v-else :class="{'cancel-the-text': !instock}">Out of Stock</p>
+
+              <div class="box-on-sale">
+                <p v-if="onSale" style="background: green;">On sale</p>
+                <p v-else style="background: red;">Not for sale</p>
               </div>
-          </div>
 
-          <h3>Sizes: </h3>
-          <span v-for="size in sizes">{{ size }} </span>
+              <p>User is premium: {{ premium }}</p>
 
-          <div>
-            <button
-            @click="incrementCart"
-            :disabled=!instock
-            :class="{disabledButton: !instock}"
-            >
-            Add to Cart
-            </button>
+              <product-details :details=details></product-details>
 
-            <button
-            @click="decrementCart"
-            :class="{disabledButton: this.cart <= 0}"
-            >
-            Remove one from Cart
-          </button>
+              <h3>Variants: </h3>
+              <div v-for="(variant, index) in variants">
+                  <div class="color-box"
+                      :style="{background: variant.variantColor}"
+                      @mouseover="updateProduct(index)">
+                  </div>
+              </div>
+
+              <h3>Sizes: </h3>
+              <span v-for="size in sizes">{{ size }} </span>
+
+              <div>
+                <button
+                @click="incrementCart"
+                :disabled=!instock
+                :class="{disabledButton: !instock}"
+                >
+                Add to Cart
+                </button>
+
+                <button
+                @click="decrementCart"
+                :class="{disabledButton: this.cart <= 0}"
+                >
+                Remove from Cart
+                </button>
+              </div>
 
           </div>
       </div>
     </div>
-    `
+  </div>
+  `
   ,
   data() {
     return {
@@ -111,6 +210,7 @@ Vue.component('product', {
       sizes: [
         "M", "L", "XL", "XXL"
       ],
+      reviews: []
       //cart: 0
     }
   },
@@ -133,6 +233,10 @@ Vue.component('product', {
     },
     updateProduct(index) {
       this.selectedVariant = index;
+    },
+    addReview(productReview) {
+      //alert('component wants to send out submitted review to the parent component');
+      this.reviews.push(productReview);
     }
   },
   computed: {
@@ -164,10 +268,6 @@ var app = new Vue({
            return;
         }
       }
-      // if (this.cart > 0) {
-      //    this.cart -= 1;
-      //    this.instock = true;
-      // }
     }
   }
 });
