@@ -24,6 +24,7 @@ Vue.component('product-add-review-box', {
       name: null,
       review: null,
       rating: null,
+      recommend: null,
       errors: []
     }
   },
@@ -31,6 +32,14 @@ Vue.component('product-add-review-box', {
   `
   <form class="review-form" @submit.prevent="submitReview">
     <div class="container-product-add-review-box">
+
+      <div v-if="errors.length" class="text-danger">
+          <h6>Errors during submit:</h6>
+          <ul>
+            <li v-for="error in errors">{{ error }}</li>
+          </ul>
+      </div>
+
       <h3>Add review for product</h3>
       <p>
         <label for="name">Name:</label>
@@ -54,6 +63,14 @@ Vue.component('product-add-review-box', {
       </p>
 
       <p>
+        <label for="recommend">Would you recommend this product:</label>
+        <select name="recommend" id="recommend" v-model="recommend">
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+      </p>
+
+      <p>
         <button>Submit</button>
       </p>
 
@@ -63,31 +80,29 @@ Vue.component('product-add-review-box', {
   methods: {
     submitReview() {
 
-      //if (name.)
-      let productReview = {
-        name: this.name,
-        review: this.review,
-        rating: this.rating
-      }
+      this.errors = [];
 
       if (!this.name) this.errors.push('Name required');
       if (!this.review) this.errors.push('Review required');
       if (!this.rating) this.errors.push('Rating required');
+      if (!this.recommend) this.errors.push('Recommend required');
 
       if (!this.errors.length) {
 
         let productReview = {
           name: this.name,
           review: this.review,
-          rating: this.rating
+          rating: this.rating,
+          recommend: this.recommend
         }
 
         this.$emit('submitted-review', productReview);
         this.name=null,
         this.review=null,
-        this.rating=null
+        this.rating=null,
+        this.recommend=null,
+        this.errors = []
       }
-
       //alert('submit action');
     }
   }
@@ -124,6 +139,7 @@ Vue.component('product', {
                 <p>Name: {{ review.name }}</p>
                 <p>Review: {{ review.review }}</p>
                 <p>Rating: {{ review.rating }}</p>
+                <p>Recommend: {{ review.recommend }}</p>
               </li>
             </ul>
 
