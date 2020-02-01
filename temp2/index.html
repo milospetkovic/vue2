@@ -27,16 +27,17 @@
 
               <label>
                 Add new item:
-                <input name="additem" placeholder="Add item">
+                <input name="additem" placeholder="Add item" v-model="addNewItem">
               </label>
 
-              <button type="button" name="button">Save</button>
+              <button name="button">Save</button>
 
             </form>
 
             <hr>
 
             <item-list :items="items"></item-list>
+
 
         </div>
 

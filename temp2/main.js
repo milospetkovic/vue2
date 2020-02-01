@@ -6,21 +6,28 @@ Vue.component('item-list', {
     }
   },
   template:
-`
-<div>
-  <div v-for="item in items">
-
-      {{ item }}
-
+  `
+  <div>
+    <div v-for="(item, index) in items" v-bind:item="item" v-bind:index="index" v-bind:key="index">
+        {{index + 1 }}. {{ item }}
+        <button v-on:click="remove(index)">Remove</button>
+    </div>
   </div>
-</div>
-`
+  `
+  ,
+  methods: {
+    remove(index) {
+      console.log('pritisnut remove');
+      this.items.splice(index, 1);
+    }
+  }
 });
 
 
 var vm = new Vue({
   el: '#app',
   data: {
+    addNewItem: '',
     items: [
       'PHP',
       'JAVA',
@@ -29,9 +36,13 @@ var vm = new Vue({
   },
   methods: {
     itemSubmited() {
-      this.items.push();
+      if (this.addNewItem.length) {
+        this.items.push(this.addNewItem);
+        this.addNewItem = '';
+      } else {
+        alert('The value for new item should not be empty');
+      }
     }
   }
 });
-
-console.log('Prikazi vue instance', vm.data);
+//console.log('Show vue instance', vm.data);
